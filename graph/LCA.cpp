@@ -10,12 +10,16 @@ std::vector<std::vector<long long>> g;
 std::vector<std::vector<long long>> up;
 std::vector<long long> prev, depth;
 std::vector <bool> used;
-const int LOG = 18;
+const int LOG = 20;
 
-void precount (long long v) {
+void precount(long long v) {
     up[v][0] = prev[v];
     for (long long k = 1; k < LOG; k++) {
-        if (up[v][k-1] != -1) up[v][k] = up[up[v][k - 1]][k - 1];
+        if (up[v][k-1] != -1) {
+            up[v][k] = up[up[v][k - 1]][k - 1];
+        } else {
+            up[v][k] = -1;
+        }
     }
 }
 void dfs_precount (long long v, long long dep) {
@@ -55,23 +59,28 @@ int main() {
     long long n, m;
     std::cin >> n >> m;
     g.resize(n + 1);
-    prev.resize(n + 1);
+    prev.resize(n + 1, -1);
     up.resize(n + 1);
     depth.resize(n + 1);
     used.resize(n + 1);
-    prev[0] = -1;
     for (long long i = 1; i < n; ++i) {
-        std::cin >> prev[i];
-        g[prev[i]].push_back(i);
-    }
-    for (long long i = 0; i < n; ++i) {
-        up[i].resize(LOG);
-    }
-    dfs_precount(0, 0);
-    while (m--) {
         long long a, b;
         std::cin >> a >> b;
-        std::cout << lca(a, b);
+        g[a].push_back(b);
+        prev[b] = a;
+    }
+    long long root;
+    for (long long i = 1; i <= n; ++i) {
+        if (prev[i] == -1) root = i;
+    }
+    for (long long i = 1; i <= n; ++i) {
+        up[i].resize(LOG);
+    }
+    dfs_precount(root, 0);
+    for (long long i = 0; i < m; ++i) {
+        long long a, b;
+        std::cin >> a >> b;
+        std::cout << lca(a, b) << std::endl;
     }
 
 
