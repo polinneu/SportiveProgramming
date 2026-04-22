@@ -15,14 +15,14 @@ const int LOG = 20;
 void precount(long long v) {
     up[v][0] = prev[v];
     for (long long k = 1; k < LOG; k++) {
-        if (up[v][k-1] != -1) {
+        if (up[v][k - 1] != -1) {
             up[v][k] = up[up[v][k - 1]][k - 1];
         } else {
             up[v][k] = -1;
         }
     }
 }
-void dfs_precount (long long v, long long dep) {
+void dfs_precount(long long v, long long dep) {
     used[v] = true;
     depth[v] = dep;
     precount(v);
@@ -30,16 +30,16 @@ void dfs_precount (long long v, long long dep) {
         if (!used[u]) dfs_precount(u, dep + 1);
     }
 }
-long long lift (long long v, long long h) {
+long long lift(long long v, long long h) {
     for (long long k = 0; k < LOG; k++) {
-        if (h & (1 << k)) {
+        if (h & (1LL << k)) {
             v = up[v][k];
             if (v == -1) break;
         }
     }
     return v;
 }
-long long lca (long long a, long long b) {
+long long lca(long long a, long long b) {
     if (depth[a] < depth[b]) std::swap(a, b);
     a = lift(a, depth[a] - depth[b]);
     if (a == b) return a;
